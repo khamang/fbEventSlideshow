@@ -24,51 +24,56 @@
 <body layout="column" ng-controller="AppCtrl">
     <md-toolbar layout="row">
         <div class="md-toolbar-tools">
-            <md-button ng-click="toggleSidenav('left')" hide-gt-sm class="md-icon-button">
-                <md-icon aria-label="menu" md-font-library="material-icons" ng-style="{color: 'green', 'font-size':'36px', height:'36px'}">home</md-icon>
+            <md-button ng-click="toggleSidenav('left')" class="md-icon-button" aria-label="menu">
+                <md-icon md-font-library="material-icons">menu</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" aria-label="More">
+            <!--<md-button class="md-icon-button" aria-label="More">
                 <md-icon md-font-library="material-icons">home</md-icon>
-            </md-button>
-            <h1>Hello World</h1>
+            </md-button>-->
+            <h1>Facebook Event Slideshow</h1>
+            <span flex></span>
+
+            <md-button class="md-raised" ng-click="share()">Share</md-button>
+            <md-button class="md-raised md-primary" ng-if="loginStatus && loginStatus.status == 'connected'">Logout</md-button>
         </div>
     </md-toolbar>
     <div layout="row" flex>
         <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
-
+            <md-content layout="column" flex class="md-padding">
+                <md-list>
+                    <md-subheader class="md-no-sticky">Events</md-subheader>
+                    <md-list-item class="md-3-line" ng-repeat="event in myEvents">
+                        <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+                        <div class="md-list-item-text" layout="column">
+                            <h3>{{ event.name }}</h3>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
         </md-sidenav>
         <div layout="column" flex id="content">
             <md-content layout="column" flex class="md-padding">
-
-
-                <a href="https://github.com/pc035860/angular-easyfb"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
                 <div class="container">
-                    <h2>angular-easyfb API demo</h2>
-                    <div>
-                        <button class="btn btn-primary" ng-click="login()" ng-disabled="loginStatus.status == 'connected'">Connect with Facebook</button>
-                        &nbsp;
-                        <button class="btn btn-danger" ng-click="logout()" ng-disabled="!loginStatus || loginStatus.status != 'connected'">Logout</button>
-                        &nbsp;
-                        <button class="btn btn-success" ng-click="share()">FB.ui</button>
+                    <div ng-if="!loginStatus || loginStatus.status != 'connected'">
+                        <md-button class="md-primary md-primary" ng-click="login()">Connect with Facebook</md-button>
                     </div>
-
-                    <br>
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="text-info">$FB.loginStatus()</h4>
-                            <div class="code-block" hljs source="loginStatusJSON"></div>
+                            <pre class="code-block">
+                                {{loginStatusJSON}}
+                            </pre>
                         </div>
                         <div class="col-md-6">
                             <h4 class="text-info">$FB.api('/me')</h4>
-                            <div class="code-block" hljs source="apiMeJSON"></div>
+                            <pre class="code-block">
+                                {{apiMeJSON}}
+                            </pre>
                         </div>
                     </div>
+
                 </div>
-
-
-
-
             </md-content>
         </div>
     </div>

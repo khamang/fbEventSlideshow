@@ -5,14 +5,9 @@
     ]);
 
     app.config(function (ezfbProvider) {
-        /**
-         * Basic setup
-         *
-         * https://github.com/pc035860/angular-easyfb#configuration
-         */
         ezfbProvider.setInitParams({
             appId: '504592706363566',
-            version: 'v2.4',
+            version: 'v2.5',
             xfbml: true
         });
 
@@ -32,7 +27,9 @@
             function updateLoginStatus(more) {
                 ezfb.getLoginStatus(function (res) {
                     $scope.loginStatus = res;
-
+                    if (res && res.status === 'connected') {
+                        $scope.listEvents();
+                    }
                     (more || angular.noop)();
                 });
             }
@@ -60,7 +57,7 @@
                     if (res.authResponse) {
                         updateLoginStatus(updateApiMe);
                     }
-                }, { scope: 'email,user_likes' });
+                }, { scope: 'email,user_likes,user_events' });
             };
 
             $scope.logout = function () {
@@ -77,17 +74,24 @@
                 ezfb.ui(
                   {
                       method: 'feed',
-                      name: 'angular-easyfb API demo',
+                      name: 'Facebook Event Slideshow',
                       picture: 'http://plnkr.co/img/plunker.png',
-                      link: 'http://plnkr.co/edit/qclqht?p=preview',
-                      description: 'angular-easyfb is an AngularJS module wrapping Facebook SDK.' +
-                                   ' Facebook integration in AngularJS made easy!' +
-                                   ' Please try it and feel free to give feedbacks.'
+                      link: 'http://http://fbeventslideshow.azurewebsites.net/',
+                      description: ' Show comments and images from your big event on the big screen!' +
+                                   ' Try it out and share it with your friends.'
                   },
                   function (res) {
                       // res: FB.ui response
                   }
                 );
+            };
+
+            $scope.listEvents = function () {
+                ezfb.api('/me/events', function (res) {
+                    if (res && res.data) {
+                        $scope.myEvents = res.data;
+                    }
+                });
             };
 
             /**
