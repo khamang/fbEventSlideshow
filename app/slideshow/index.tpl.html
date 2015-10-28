@@ -1,0 +1,10 @@
+﻿<div>
+    <md-button ng-click="exitSlideShow()" class="md-icon-button " aria-label="close">
+        <md-icon md-font-library="material-icons">close</md-icon>
+    </md-button>
+    <div ng-if="bool" class="fade">
+        Fade me in out
+    </div>
+    <button ng-click="bool=true">Fade In!</button>
+    <button ng-click="bool=false">Fade Out!</button>
+</div>

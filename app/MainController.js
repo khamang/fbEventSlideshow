@@ -1,23 +1,22 @@
 ﻿(function () {
     'use strict';
-    var app = angular.module('fbEventSlideshow', [
-        'ngMaterial', 'ezfb'
-    ]);
+    var app = angular.module('fbEventSlideshow');
+    
+    app.controller('MainController', [
+                 '$scope', '$mdSidenav', 'ezfb', '$window', '$location', '$mdDialog', '$q', '$state',
+        function ($scope, $mdSidenav, ezfb, $window, $location, $mdDialog, $q, $state) {
+            function launchIntoFullscreen(element) {
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            }
 
-    app.config(function (ezfbProvider) {
-        ezfbProvider.setInitParams({
-            appId: '504592706363566',
-            version: 'v2.5',
-            xfbml: true
-        });
-
-        ezfbProvider.setLocale('nb-NO');
-
-    });
-
-   
-    app.controller('AppCtrl', [
-        '$scope', '$mdSidenav', 'ezfb', '$window', '$location', '$mdDialog', '$q', function ($scope, $mdSidenav, ezfb, $window, $location, $mdDialog, $q) {
 
             function updateLoginStatus(more) {
                 ezfb.getLoginStatus(function (res) {
@@ -126,6 +125,12 @@
                         $scope.eventInfo = null;
                     }
                 });
+            }
+
+            $scope.playSlideshow = function (selectedEventId) {
+                $state.go('slideshow', { eventId: selectedEventId });
+                // Launch fullscreen for browsers that support it!
+                launchIntoFullscreen(document.documentElement); // the whole page
             }
 
             $scope.closeEventInfo = function () {
