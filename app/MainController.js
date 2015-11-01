@@ -3,8 +3,8 @@
     var app = angular.module('fbEventSlideshow');
     
     app.controller('MainController', [
-                 '$scope', '$mdSidenav', 'ezfb', '$window', '$location', '$mdDialog', '$q', '$state',
-        function ($scope, $mdSidenav, ezfb, $window, $location, $mdDialog, $q, $state) {
+                 '$scope', '$mdSidenav', 'ezfb', '$window', '$location', '$mdDialog', '$q', '$state','fbService',
+        function ($scope, $mdSidenav, ezfb, $window, $location, $mdDialog, $q, $state, fbService) {
             function launchIntoFullscreen(element) {
                 if (element.requestFullscreen) {
                     element.requestFullscreen();
@@ -84,22 +84,15 @@
             };
 
             $scope.listEvents = function () {
-                var filterMine = $scope.myEventsOnly ? "/created" : "";
-                var sinceDate = $scope.showEventsCompleted ? "" : "&since=yesterday";
-                var eventsGraph = '/me/events' + filterMine + '?fields=cover,description,id,name,start_time' + sinceDate;
-                ezfb.api(eventsGraph, function (res) {
-                    if (res && res.data) {
-                        $scope.myEvents = res.data;
-                    }
+                fbService.getEvents($scope.myEventsOnly, $scope.showEventsCompleted).then(function (result) {
+                    $scope.myEvents = result.data;
+                }, function () {
+                    $scope.myEvents = null;
                 });
             };
 
             $scope.selectEvent = function (selectedEvent, browserEvent) {
                 $scope.selectedEvent = selectedEvent;
-            }
-
-            $scope.getEventPhotos = function (eventId) {
-                return ezfb.api("/" + eventId + "/photos?fields=from,created_time,id,name,images,link");
             }
 
             $scope.goToPhoto = function (photo, windowEvent) {
@@ -116,7 +109,7 @@
             }
 
             $scope.showEventInfo = function (eventId) {
-                $scope.getEventPhotos(eventId).then(function (res) {
+                fbService.getEventPhotos(eventId).then(function (res) {
                     if (res && res.data) {
                         $scope.eventInfo = {
                             photos: res.data

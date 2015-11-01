@@ -19,12 +19,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.5.0/angular-material-icons.min.js"></script>
     <script src="app/lib/angular-easyfb.min.js"></script>
     <script src="app/fbEventSlideshow.module.js"></script>
+    <script src="app/fb/fbSvc.js"></script>
+    <script src="app/messageBox.js"></script>
     <script src="app/MainController.js"></script>
     <script src="app/slideshow/SlideshowController.js"></script>
 
     <meta name="viewport" content="initial-scale=1" />
 </head>
-<body layout="column">
-    <div ui-view></div>
+<body layout="column" ng-cloak>
+    <message-box></message-box>
+    <div ui-view id="view"></div>
 </body>
 </html>

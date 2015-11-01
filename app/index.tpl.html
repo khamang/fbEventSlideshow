@@ -20,7 +20,7 @@
             <md-content layout="column" flex class="md-padding">
                 <div class="container">
                     <h3>Welcome to Facebook Event slideshow. In order to get started, connect with Facebook!</h3>
-                    <md-button class="md-primary md-primary" ng-click="login()">Connect with Facebook</md-button>
+                    <md-button class="md-primary md-raised" ng-click="login()">Connect with Facebook</md-button>
                 </div>
             </md-content>
         </div>
@@ -44,50 +44,52 @@
         </md-content>
     </md-sidenav>
     <div layout="column" flex id="content" ng-if="loginStatus && loginStatus.status == 'connected'">
-        <md-content layout="column" flex class="md-padding">
+        <md-content layout="row" flex class="md-padding">
             <div class="container">
-                <md-card ng-if="selectedEvent">
-                    <img ng-src="{{selectedEvent.cover.source}}" class="md-card-image" alt="cover" ng-if="selectedEvent.cover">
-                    <md-card-content>
+                <div layout="row" ng-if="selectedEvent" class="selectedEvent">
+                    <div flex="33" layout-padding ng-if="selectedEvent.cover" class="cover">
+                        <img ng-src="{{selectedEvent.cover.source}}" class="md-card-image" alt="cover">
+                    </div>
+                    <div flex layout-padding class="description">
                         <h2 class="md-title">{{selectedEvent.name}}</h2>
                         <p>
                             {{selectedEvent.description}}
                         </p>
-                        <div ng-if="eventInfo">
-                            <md-toolbar layout="row">
-                                <div class="md-toolbar-tools">
-                                    <md-icon md-font-library="material-icons">info_outline</md-icon>
-                                    <h1>Event information</h1>
-                                    <span flex></span>
-                                    <md-button ng-click="closeEventInfo()">
-                                        <md-icon md-font-library="material-icons">close</md-icon>
-                                    </md-button>
-                                </div>
-                            </md-toolbar>
-                            <div>
-                                <md-list-item class="md-3-line" ng-repeat="photo in eventInfo.photos" ng-click="goToPhoto(photo, $event)">
-                                    <img ng-src="{{ photo.images[0].source }}" class="md-avatar" />
-                                    <div class="md-list-item-text" layout="column">
-                                        <h3>{{ photo.name || '[no comment]'}}</h3>
-                                        <h4>{{ photo.from.name}}</h4>
-                                        <p>Comments: {{ photo.comments.length }}</p>
-                                    </div>
-                                </md-list-item>
-                            </div>
+                        <div class="md-actions" layout="row" layout-wrap>
+                            <md-button class="md-primary md-raised" ng-click="playSlideshow(selectedEvent.id)">
+                                <md-icon md-font-library="material-icons">play_arrow</md-icon> Start slideshow
+                            </md-button>
+                            <md-button ng-click="showEventInfo(selectedEvent.id)">
+                                <md-icon md-font-library="material-icons">info_outline</md-icon> Event Information
+                            </md-button>
+                            <md-button ng-click="configureEvent()">
+                                <md-icon md-font-library="material-icons">settings</md-icon> Configuration
+                            </md-button>
                         </div>
-                    </md-card-content>
-                    <div class="md-actions" layout="row" layout-align="end center">
-                        <md-button class="md-primary md-raised" ng-click="playSlideshow(selectedEvent.id)">
-                            <md-icon md-font-library="material-icons">play_arrow</md-icon> Start slideshow
-                        </md-button>
-                        <md-button ng-click="showEventInfo(selectedEvent.id)">
-                            <md-icon md-font-library="material-icons">info_outline</md-icon> Event Information
-                        </md-button>
-                        <md-button ng-click="configureEvent()">
-                            <md-icon md-font-library="material-icons">settings</md-icon> Configuration
-                        </md-button>
                     </div>
-                </md-card>
+                </div>
+                <div layout="column" ng-if="eventInfo">
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <md-icon md-font-library="material-icons">info_outline</md-icon>
+                            <h1>Event information</h1>
+                            <span flex></span>
+                            <md-button ng-click="closeEventInfo()">
+                                <md-icon md-font-library="material-icons">close</md-icon>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+                    <md-content flex class="md-padding">
+                        <md-list-item class="md-3-line" ng-repeat="photo in eventInfo.photos" ng-click="goToPhoto(photo, $event)">
+                            <img ng-src="{{ photo.images[0].source }}" class="md-avatar" />
+                            <div class="md-list-item-text" layout="column">
+                                <h3>{{ photo.name || '[no comment]'}}</h3>
+                                <h4>{{ photo.from.name}}</h4>
+                                <p>Comments: {{ photo.comments.length }}</p>
+                            </div>
+                        </md-list-item>
+                    </md-content>
+                </div>
                 <h3 ng-if="!selectedEvent">Please select an event from the list</h3>
                 <div class="row" ng-if="showDebugInfo">
                     <div class="col-md-6">

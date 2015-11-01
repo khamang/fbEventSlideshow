@@ -1,11 +1,17 @@
 ﻿.fade.ng-enter {
-  transition:0.5s linear all;
+  transition:3s ease-out all;
   opacity:0;
+    transform: scale(0.9);
 }
 
 /* The finishing CSS styles for the enter animation */
 .fade.ng-enter.ng-enter-active {
   opacity:1;
+    transform: scale(1.1);
+}
+
+.fade {
+    transform: scale(1.1);
 }
 
 /* there is no need to define anything inside of the destination
