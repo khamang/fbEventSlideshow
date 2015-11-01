@@ -1,26 +1,37 @@
-﻿.fade.ng-enter {
-  transition:3s ease-out all;
-  opacity:0;
+﻿/*@scale-out: (@scale-max + @scale-min) / 2;*/
+.fade.ng-enter {
+  animation-name: fade_in;
+  animation-timing-function: ease-out;
+}
+@keyframes fade_in {
+  from {
+    opacity: 0;
     transform: scale(0.9);
-}
-
-/* The finishing CSS styles for the enter animation */
-.fade.ng-enter.ng-enter-active {
-  opacity:1;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
     transform: scale(1.1);
+  }
 }
-
-.fade {
-    transform: scale(1.1);
-}
-
-/* there is no need to define anything inside of the destination
-CSS class since the keyframe will take charge of the animation */
 .fade.ng-leave {
-  animation: my_fade_animation 0.5s linear;
+  animation-name: fade_out;
+  animation-duration: 0.5s !important;
+  animation-timing-function: linear;
 }
-
-@keyframes my_fade_animation {
-  from { opacity:1; }
-  to { opacity:0; }
+@keyframes fade_out {
+  from {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+/* The finishing CSS styles for the enter animation */
+.fade {
+  transform: scale(1.1);
 }

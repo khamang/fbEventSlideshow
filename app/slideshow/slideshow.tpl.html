@@ -1,0 +1,16 @@
+﻿<div id="canvas">
+    <md-button ng-click="exitSlideShow()" class="md-icon-button closeButton" aria-label="close">
+        <md-icon md-font-library="material-icons">close</md-icon>
+    </md-button>
+    <img id="background" src="http://www.freebiesgallery.com/wp-content/uploads/2014/02/blurred-background-7.jpg" />
+    <div id="slides">
+        <photo ng-if="showPhoto0" photo="photo0" animation-time="animationTime" comments="photoComments0"></photo>
+        <photo ng-if="showPhoto1" photo="photo1" animation-time="animationTime" comments="photoComments1"></photo>
+    </div>
+    <photo-meta ng-if="showPhoto0" photo="photo0" animation-time="animationTime" total-duration="totalSlideDuration"></photo-meta>
+    <photo-meta ng-if="showPhoto1" photo="photo1" animation-time="animationTime" total-duration="totalSlideDuration"></photo-meta>
+    <div layout="row" layout-sm="column" layout-align="space-around" ng-if="pristine">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+    <div class="debug" ng-if="debug">{{debugInfo | json}}</div>
+</div>

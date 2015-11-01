@@ -39,11 +39,9 @@
     }]);
 
     app.config(function ($stateProvider, $urlRouterProvider) {
-        //
         // For any unmatched url, redirect to /state1
         $urlRouterProvider.otherwise("/");
-        //
-        // Now set up the states
+        //states
         $stateProvider
             .state('index', {
                 url: "/",
@@ -52,13 +50,10 @@
             })
             .state('slideshow', {
                 url: "/slideshow/:eventId",
-                templateUrl: "app/slideshow/index.tpl.html",
+                templateUrl: "app/slideshow/slideshow.tpl.html",
                 controller: "SlideshowController"
             });
-
     });
-
-
 })();
 
 

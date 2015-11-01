@@ -6,9 +6,13 @@
                 '$scope', 'ezfb', '$state', 'fbService', '$stateParams', '$rootScope', '$animate', '$timeout', 
         function ($scope, ezfb, $state, fbService, $stateParams, $rootScope, $animate, $timeout) {
             $scope.pristine = true;
-            var delay = 4000;
+            var slideTime = 8; //seconds
+            var animationTime = 6; //seconds
+            var totalSlideDuration = (slideTime + animationTime) * 1000;
             var currentImageNumber = 0;
-            $scope.transition = "transition:" + 20000 / 1000 + "s ease-in-out all";
+
+            $scope.totalSlideDuration = totalSlideDuration;
+            $scope.animationTime = animationTime;
   
             var previousPhotos = [];
 
@@ -46,20 +50,23 @@
 
             function showDelayedPhotos(photos) {
                 $timeout(function () {
-                    console.log("ShowPhoto. Delay: ", delay);
-                    showPhoto(photos, delay);
-                }, delay);
+                    console.log("ShowPhoto. totalSlideDuration: ", totalSlideDuration);
+                    showPhoto(photos);
+                }, totalSlideDuration);
             }
 
             function showPhoto(photos) {
                 var photo = photos.pop();
-                var imageNumber = currentImageNumber === 0 ? 1 : 0;
-                var imageNumberPrevious = currentImageNumber === 0 ? 0 : 1;
-                currentImageNumber = imageNumber;
-                console.log("Show photo", photo, imageNumber, imageNumberPrevious);
-                $scope['showImage' + imageNumberPrevious] = false;
-                $scope['showImage' + imageNumber] = true;
-                $scope['image' + imageNumber] = photo.images[0].source;
+                var photoNumber = currentImageNumber === 0 ? 1 : 0;
+                var photoNumberPrevious = currentImageNumber === 0 ? 0 : 1;
+                currentImageNumber = photoNumber;
+                console.log("Show photo", photo, photoNumber, photoNumberPrevious);
+                $scope['showPhoto' + photoNumberPrevious] = false;
+                $scope['photo' + photoNumber] = photo;
+                $scope['showPhoto' + photoNumber] = true;
+                $scope['photoComments' + photoNumber] = fbService.getComments(photo.id);
+                $scope.debugInfo = photo;
+                $scope.debug = false;
                 if (photos.length > 0) {
                     console.log("There are ore photos in iteration. Length: ", photos.length);
                     showDelayedPhotos(photos);
@@ -89,6 +96,7 @@
                                 angular.forEach(res.data, function (photo) {
                                     previousPhotos.push(photo.id);
                                 });
+                                //previousPhotos.pop(); //debug;
                                 console.log("Initialized previousPhotos", previousPhotos);
                                 startSlideShow(res.data);
                             } else if (res && res.error) {
@@ -105,12 +113,6 @@
                     }
                 });
             }
-
-           
-
-           
-
-           
             
             
             //$animate.on('enter', container,
