@@ -1,21 +1,20 @@
 ﻿(function () {
     'use strict';
     var app = angular.module('fbEventSlideshow');
-    app.directive('photoMeta', ['fbService', function (fbService) {
+    app.directive('slide', ['fbService', function (fbService) {
         return {
             restrict: 'E',
-            templateUrl: '/app/photoMeta/photoMeta.tpl.html',
+            templateUrl: '/app/slide/slide.tpl.html',
             scope: {
                 photo: '=',
-                animationTime: '=',
-                totalDuration: '='
+                animationDuration: '='
             },
             transclude: true,
             replace: true, 
             link: function link(scope, element, attrs) {
+                scope.image = scope.photo.images[0].source;
+                scope.animationStyle = 'animation-duration: ' + scope.animationDuration + 's;';
                 scope.metaDataFromName = scope.photo.from.name;
-                scope.metaDataTime = scope.photo.created_time;
-                scope.animationStyle = 'animation-duration: ' + scope.animationTime + 's;';
             }
         };
     }]);

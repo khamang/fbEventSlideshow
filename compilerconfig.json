@@ -2,5 +2,13 @@
   {
     "outputFile": "app/css/animations.css",
     "inputFile": "app/css/animations.less"
+  },
+  {
+    "outputFile": "app/css/variables.css",
+    "inputFile": "app/css/variables.less"
+  },
+  {
+    "outputFile": "app/css/app.css",
+    "inputFile": "app/css/app.less"
   }
 ]

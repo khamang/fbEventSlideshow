@@ -11,11 +11,11 @@
         };
 
         var getEventPhotos = function (eventId) {
-            return ezfb.api("/" + eventId + "/photos?fields=from,created_time,id,name,images,link");
+            return ezfb.api("/" + eventId + "/photos?fields=from{picture, name, first_name},created_time,id,name,images,link");
         }
 
         var getComments = function(photoId) {
-            return ezfb.api("/" + photoId + "/comments");
+            return ezfb.api("/" + photoId + "/comments?fields=from{picture, name, first_name},created_time,id,message");
         }
 
 
