@@ -53,8 +53,9 @@
   }
 }
 .animation_popin-left {
-  transform: translate(0, 0);
+  /*transform: translate(0,0);*/
   opacity: 0.8;
+  display: block;
 }
 .animation_popin-left.ng-leave {
   animation-name: popout-left;
@@ -73,6 +74,43 @@
   }
 }
 /*popin-left end*/
+/*popin-right*/
+.animation_popin-right.ng-enter {
+  animation-name: popin-right;
+  animation-timing-function: ease-out;
+  opacity: 0;
+}
+@keyframes popin-right {
+  from {
+    opacity: 0;
+    transform: translate(500px, 0);
+  }
+  to {
+    opacity: 0.8;
+    transform: translate(0, 0);
+  }
+}
+.animation_popin-right {
+  transform: translate(0, 0);
+  opacity: 0.8;
+}
+.animation_popin-right.ng-leave {
+  animation-name: popout-right;
+  animation-duration: 0.5s !important;
+  animation-delay: 0s !important;
+  animation-timing-function: ease-in;
+}
+@keyframes popout-right {
+  from {
+    opacity: 0.8;
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(200px, 0);
+  }
+}
+/*popin-right end*/
 /*popin-bottom*/
 .animation_popin-bottom.ng-enter {
   animation-name: popin-bottom;

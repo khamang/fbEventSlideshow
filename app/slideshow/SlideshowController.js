@@ -3,21 +3,34 @@
     var app = angular.module('fbEventSlideshow');
 
     app.controller('SlideshowController', [
-                '$scope', 'ezfb', '$state', 'fbService', '$stateParams', '$rootScope', '$animate', '$timeout', 
-        function ($scope, ezfb, $state, fbService, $stateParams, $rootScope, $animate, $timeout) {
+                '$scope', 'ezfb', '$state', 'fbService', '$stateParams', '$rootScope', '$animate', '$timeout', '$document',
+        function ($scope, ezfb, $state, fbService, $stateParams, $rootScope, $animate, $timeout, $document) {
             $scope.pristine = true;
-            var slideTime = 6; //seconds
-            var slideAnimationDuration = 6; //seconds
+
+            var slideTime = 12; //seconds
+            var slideAnimationDuration = 3; //seconds
             var metaAnimationDuration = slideAnimationDuration > 5 ? slideAnimationDuration / 2 : 2;
             var metaAnimationDelay = metaAnimationDuration / 2;
             var descriptionAnimationDuration = metaAnimationDuration;
             var descriptionAnimationDelay = metaAnimationDelay / 3;
-            var commentsAnimationDuration = 800; //milliseconds
+            var commentsAnimationDuration = 600; //milliseconds
             var commentsAnimationDelay = metaAnimationDelay + metaAnimationDuration;
-            var commentAnimationDelay = 500; //milliseconds
+            var commentAnimationDelay = 400; //milliseconds
+            var numberOfLikesAnimationDuration = metaAnimationDuration;
+            var numberOfLikesAnimationDelay = metaAnimationDelay * 1000 + 300; //milliseconds
+            var mostLikedAnimationDuration = metaAnimationDuration;
+            var mostLikedAnimationDelay = numberOfLikesAnimationDelay + 300; //milliseconds
+
+
+            var maxNumberOfSlides = 3;
+            var maxNumberOfTopLikedSlides = 2;
+            var skipFilterToShowAllSlides = true;
+            var numberOfIterations = 0;
+            var numberOfIterationsToResetSkipFilter = 10;
 
             var totalSlideDuration = (slideTime + slideAnimationDuration) * 1000;
             var currentSlideNumber = 0;
+            var showExitButonTimer;
 
             $scope.slideAnimationDuration = slideAnimationDuration;
             $scope.metaAnimationDuration = metaAnimationDuration;
@@ -27,7 +40,13 @@
             $scope.commentsAnimationDuration = commentsAnimationDuration;
             $scope.commentsAnimationDelay = commentsAnimationDelay;
             $scope.commentAnimationDelay = commentAnimationDelay;
-              
+            $scope.numberOfLikesAnimationDuration = numberOfLikesAnimationDuration;
+            $scope.numberOfLikesAnimationDelay = numberOfLikesAnimationDelay;
+            $scope.mostLikedAnimationDuration = mostLikedAnimationDuration;
+            $scope.mostLikedAnimationDelay = mostLikedAnimationDelay;
+
+            $scope.showExitButton = false;
+
             var previousPhotos = [];
 
             function exitFullscreen() {
@@ -41,7 +60,7 @@
             }
 
             function showSlide(photos) {
-                var photo = photos.pop();
+                var photo = photos.shift();
                 var slideNumber = currentSlideNumber === 0 ? 1 : 0;
                 var slideNumberPrevious = currentSlideNumber === 0 ? 0 : 1;
                 currentSlideNumber = slideNumber;
@@ -50,7 +69,9 @@
 
                 $scope['photo' + slideNumber] = photo;
                 $scope['photoComments' + slideNumber] = fbService.getComments(photo.id);
+                $scope['photoNumberOfLikes' + slideNumber] = photo.likes.summary.total_count;
                 $scope['showSlide' + slideNumber] = true;
+                
                 $scope.debugInfo = photo;
                 $scope.debug = false;
                 if (photos.length > 0) {
@@ -59,6 +80,12 @@
                 } else {
                     //get new photos
                     console.log("This was the last slide. Starting over.");
+                    numberOfIterations++;
+                    if (numberOfIterationsToResetSkipFilter > 0 && numberOfIterations >= numberOfIterationsToResetSkipFilter) {
+                        console.log("Resetting filter to show all slides. Number of iterations: ", numberOfIterations);
+                        numberOfIterations = 0;
+                        skipFilterToShowAllSlides = true;
+                    }
                     loadNewPhotos();
                 }
             }
@@ -84,7 +111,7 @@
                         console.error('Failed to load new photos', res.error);
                         photos = angular.copy($scope.photos); //start again with previous photos
                     }
-                    showSlideDelayed(photos);
+                    showSlideDelayed(filterPhotos(photos));
                 }, function (error) {
                     $scope.showLoader = false;
                     console.error('Async error - Failed to load new photos', error);
@@ -94,8 +121,70 @@
 
             function startSlideShow(photoData) {
                 console.log("Starting slideshow");
-                var photos = angular.copy(photoData);
+                var photos = filterPhotos(angular.copy(photoData));
                 showSlide(photos);
+            }
+
+            function filterPhotos(photos) {
+                if (!photos || photos.length === 0) {
+                    return photos;
+                }
+                //Find coverPhoto
+                var filteredPhotos = angular.copy(photos);
+                var coverPhoto = photos[photos.length - 1];
+
+                if (!skipFilterToShowAllSlides) {
+                    if (maxNumberOfSlides > 0 && maxNumberOfSlides > filteredPhotos.length) {
+                        filteredPhotos = filteredPhotos.slice(0, maxNumberOfSlides);
+                    }
+                }
+
+                filteredPhotos.reverse(); //reverse to get newest first...
+
+                if (coverPhoto) {
+                    var isCoverPhotoInFilteredPhotos = _.some(filteredPhotos, { 'id': coverPhoto.id });
+                    if (!isCoverPhotoInFilteredPhotos) {
+                        console.log("Adding cover Photo", coverPhoto);
+                        filteredPhotos.splice(0, 0, coverPhoto);
+                    } else {
+                        console.log("Coverphoto is already in filtered photos.");
+                    }
+                }
+
+                //Find Most Liked Photos
+                if (maxNumberOfTopLikedSlides > 0) {
+                    var mostLikesPhotos = _.chain(photos).filter(function (item) { return item.likes.summary.total_count > 0; }).sortBy(function (item) { return item.likes.summary.total_count }).reverse().value().slice(0, maxNumberOfTopLikedSlides);
+                    console.log("Most liked photos", mostLikesPhotos, mostLikesPhotos.length);
+                    var mostLikedCounter = 1;
+                    angular.forEach(mostLikesPhotos, function (mostLikedPhoto) {
+                        var mostedLikedPhotoInFilteredPhoto = _.find(filteredPhotos, { 'id': mostLikedPhoto.id });
+                        if (mostedLikedPhotoInFilteredPhoto) {
+                            mostedLikedPhotoInFilteredPhoto.mostLiked = true;
+                        } else {
+                            mostLikedPhoto.mostLiked = true;
+                            filteredPhotos.push(mostLikedPhoto);
+                        }
+                        mostLikedCounter++;
+                    });
+                }
+                console.log("Filtered photos", filteredPhotos, filteredPhotos.length);
+
+                skipFilterToShowAllSlides = false;
+                return filteredPhotos;
+            }
+
+            function setShowExitButtonTimer() {
+                $timeout.cancel(showExitButonTimer);
+                showExitButonTimer = $timeout(function () {
+                    console.log("showExitButonTimer. Hiding button", showExitButonTimer);
+                    $scope.showExitButton = false;
+                }, 3000);
+                $scope.showExitButton = true;
+            }
+
+            function mousemove() {
+                setShowExitButtonTimer();
+                $scope.$apply();
             }
 
             function init() {
@@ -128,14 +217,6 @@
                     }
                 });
             }
-            
-            
-            //$animate.on('enter', container,
-            //    function callback(element, phase) {
-            //        // cool we detected an enter animation within the container
-            //    }
-            //);
-
 
             $scope.exitSlideShow = function () {
                 exitFullscreen();
@@ -168,6 +249,10 @@
                     $scope.listEvents();
                 }
             });
+
+            $document.on('mousemove', mousemove);
+
+
 
             init();
         }]);

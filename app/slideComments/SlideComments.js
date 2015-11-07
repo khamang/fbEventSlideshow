@@ -1,10 +1,10 @@
 ﻿(function () {
     'use strict';
     var app = angular.module('fbEventSlideshow');
-    app.directive('slideComments', ['$timeout', function ($timeout) {
+    app.directive('slideComments', ['$timeout', '$animate', function ($timeout, $animate) {
         return {
             restrict: 'E',
-            templateUrl: '/app/slideComments/slideComments.tpl.html',
+            templateUrl: '/app/slideComments/slideComments.tpl.html?version=' + new Date().getTime(),
             scope: {
                 comments: '=',
                 animationDuration: '=',
@@ -15,16 +15,19 @@
             link: function link(scope, element, attrs) {
                 var delayTimer;
                 var commentTimer;
+                var parent = element;
                 var addComment = function (comments) {
                     var comment = comments.pop();
                     console.log("Adding comment...", comment, "delay:", scope.commentAnimationDelay);
                     $timeout(function () {
-                        console.log("...there ", comment.message);
-                        element.append("<div ng-if=\"1\" class=\"comment animation_popin-left\" style=\"animation-duration: " + scope.animationDuration + "ms;\">" +
-                                        "<span class=\"message\">" +
+                        var imageUrl = comment.from.picture && comment.from.picture.data ? comment.from.picture.data.url : "";
+                        console.log("...there ", comment.message, "parent", parent);
+                        var newComment = angular.element("<div class=\"comment animation_popin-left\" style=\"animation-duration: " + scope.animationDuration + "ms;\">" +
+                                        "<img src=\"" + imageUrl + "\"><span class=\"message\">" +
                                             comment.message +
                                         "<span>" +
                                     "</div>");
+                        $animate.enter(newComment, parent);
                         if (comments.length > 0) {
                             addComment(comments);
                         }

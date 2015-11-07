@@ -49,8 +49,8 @@
                 controller: "MainController"
             })
             .state('slideshow', {
-                url: "/slideshow/:eventId",
-                templateUrl: "app/slideshow/slideshow.tpl.html",
+                url: "/slideshow/:eventId?v=:version",
+                templateUrl: "app/slideshow/slideshow.tpl.html?version=" + new Date().getTime(),
                 controller: "SlideshowController"
             });
     });

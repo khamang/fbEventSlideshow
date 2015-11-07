@@ -1,5 +1,5 @@
 ﻿<div id="canvas">
-    <md-button ng-click="exitSlideShow()" class="md-icon-button closeButton" aria-label="close">
+    <md-button ng-click="exitSlideShow()" class="md-icon-button closeButton" aria-label="close" ng-show="showExitButton">
         <md-icon md-font-library="material-icons">close</md-icon>
     </md-button>
     <img id="background" src="http://www.freebiesgallery.com/wp-content/uploads/2014/02/blurred-background-7.jpg" />
@@ -13,6 +13,8 @@
     <slide-description ng-if="showSlide1 && photo1.name" photo="photo1" animation-duration="descriptionAnimationDuration" animation-delay="descriptionAnimationDelay"></slide-description>
     <slide-comments ng-if="showSlide0 && photoComments0" comments="photoComments0" animation-duration="commentsAnimationDuration" animation-delay="commentsAnimationDelay" comment-animation-delay="commentAnimationDelay"></slide-comments>
     <slide-comments ng-if="showSlide1 && photoComments1" comments="photoComments1" animation-duration="commentsAnimationDuration" animation-delay="commentsAnimationDelay" comment-animation-delay="commentAnimationDelay"></slide-comments>
+    <slide-number-of-likes ng-if="showSlide0 && photoNumberOfLikes0 > 0" number-of-likes="photoNumberOfLikes0" animation-duration="numberOfLikesAnimationDuration" animation-delay="numberOfLikesAnimationDelay"></slide-number-of-likes>
+    <slide-number-of-likes ng-if="showSlide1 && photoNumberOfLikes1 > 0" number-of-likes="photoNumberOfLikes1" animation-duration="numberOfLikesAnimationDuration" animation-delay="numberOfLikesAnimationDelay"></slide-number-of-likes>
     <div layout="row" layout-sm="column" layout-align="space-around" ng-if="pristine">
         <md-progress-circular md-mode="indeterminate"></md-progress-circular>
     </div>

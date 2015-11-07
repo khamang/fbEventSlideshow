@@ -22,8 +22,8 @@
     background-color: #ffc882;
     opacity: @global-overlay-opacity;
     color: #222;
-    bottom: 34px;
-    /*padding: 5px 10px;*/
+    top: 50px;
+    right: 0;
     height: 27px;
 }
 
@@ -49,6 +49,31 @@
     font-style: italic;
 }
 
+.numberOfLikes {
+    position: absolute;    
+    opacity: @global-overlay-opacity;
+    color: #222;
+    top: 50px;
+    left: 0;
+    height: 27px;
+    background-color: #fff;
+}
+
+.numberOfLikes img {
+    display: inline-block;
+    /*position:absolute;*/
+    height: 27px;
+    vertical-align: top;
+}
+
+.numberOfLikes span.numberOfLikesCount {
+    display: inline-block;
+    margin: 5px 10px 5px 5px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #30418f;    
+}
+
 
 .slideDescription {
     position: absolute;
@@ -61,19 +86,37 @@
     width: 100%;
 }
 
-.comments{
-    opacity:@global-overlay-opacity;
+.comments {
+    opacity: @global-overlay-opacity;
     position: absolute;
     height: 100%;
+    width: 50%;
     left: 0;
     top: 0;
+    padding-top: 83px;
+    /*background-color: yellow;*/
 }
 
-.comments .comment{
-    background-color: #333;
+.comments .comment {
     color: #efefef;
-    padding: 3px 6px;
-    margin-top: 10px;
+    margin-bottom: 10px;
+    width: auto;
+    height: 27px;    
+    overflow: hidden;
+    /*background-color: red;*/
+}
+
+.comments .comment .message {
+    background-color: #333;
+    padding: 4px 10px;
+    display: inline-block;
+    height: 27px;    
+}
+
+.comments .comment img {    
+    display: inline-block;
+    height: 27px;
+    vertical-align: top;
 }
 
 
@@ -124,4 +167,9 @@
     z-index: 9999999;
     position: absolute;
     right: 0;
+}
+
+/*Material fixes*/
+md-toolbar.md-default-theme:not(.md-menu-toolbar), md-toolbar:not(.md-menu-toolbar) .md-button {
+    color: rgba(0, 0, 0, 0.87);
 }

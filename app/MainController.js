@@ -121,7 +121,7 @@
             }
 
             $scope.playSlideshow = function (selectedEventId) {
-                $state.go('slideshow', { eventId: selectedEventId });
+                $state.go('slideshow', { eventId: selectedEventId, version: new Date().getTime() });
                 // Launch fullscreen for browsers that support it!
                 launchIntoFullscreen(document.documentElement); // the whole page
             }
