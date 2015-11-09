@@ -133,8 +133,18 @@
                 var filteredPhotos = angular.copy(photos);
                 var coverPhoto = photos[photos.length - 1];
 
-                if (!skipFilterToShowAllSlides) {
-                    if (maxNumberOfSlides > 0 && maxNumberOfSlides > filteredPhotos.length) {
+                if (!skipFilterToShowAllSlides && maxNumberOfSlides > 0) {
+                    var newPhotosToShow = [];
+                    angular.forEach(filteredPhotos, function (photo) {
+                        var alreadyShownPhoto = _.indexOf(previousPhotos, photo.id);
+                        if (!alreadyShownPhoto > -1) {
+                            newPhotosToShow.push(photo);
+                        }
+                    });
+
+                    if (newPhotosToShow.length > maxNumberOfSlides) {
+                        filteredPhotos = newPhotosToShow; //show all the new photos since last run
+                    } else if ( maxNumberOfSlides > filteredPhotos.length) {
                         filteredPhotos = filteredPhotos.slice(0, maxNumberOfSlides);
                     }
                 }
