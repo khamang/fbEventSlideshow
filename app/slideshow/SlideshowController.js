@@ -3,8 +3,8 @@
     var app = angular.module('fbEventSlideshow');
 
     app.controller('SlideshowController', [
-                '$scope', 'ezfb', '$state', 'fbService', '$stateParams', '$rootScope', '$animate', '$timeout', '$document',
-        function ($scope, ezfb, $state, fbService, $stateParams, $rootScope, $animate, $timeout, $document) {
+                '$scope', 'ezfb', '$state', 'fbService', 'filterPhotosSvc', '$stateParams', '$rootScope', '$animate', '$timeout', '$document', 
+        function ($scope, ezfb, $state, fbService, filterPhotosSvc, $stateParams, $rootScope, $animate, $timeout, $document) {
             $scope.pristine = true;
 
             var slideTime = 12; //seconds
@@ -134,14 +134,7 @@
                 var coverPhoto = photos[photos.length - 1];
 
                 if (!skipFilterToShowAllSlides && maxNumberOfSlides > 0) {
-                    var newPhotosToShow = [];
-                    angular.forEach(filteredPhotos, function (photo) {
-                        var alreadyShownPhoto = _.indexOf(previousPhotos, photo.id);
-                        if (!alreadyShownPhoto > -1) {
-                            newPhotosToShow.push(photo);
-                        }
-                    });
-
+                    var newPhotosToShow = filterPhotosSvc.getNewPhotos(previousPhotos, filteredPhotos);
                     if (newPhotosToShow.length > maxNumberOfSlides) {
                         filteredPhotos = newPhotosToShow; //show all the new photos since last run
                     } else if ( maxNumberOfSlides > filteredPhotos.length) {

@@ -1,8 +1,11 @@
 ﻿<div id="canvas">
+    <div id="preloader">
+        <img ng-repeat="photo in photos" ng-src="{{photo.images[0].source}}"/>
+    </div>
     <md-button ng-click="exitSlideShow()" class="md-icon-button closeButton" aria-label="close" ng-show="showExitButton">
         <md-icon md-font-library="material-icons">close</md-icon>
     </md-button>
-    <img id="background" src="http://www.freebiesgallery.com/wp-content/uploads/2014/02/blurred-background-7.jpg" />
+    <img id="background" src="http://www.freebiesgallery.com/wp-content/uploads/2014/02/blurred-background-7.jpg"/>
     <div id="slides">
         <slide ng-if="showSlide0" photo="photo0" animation-duration="slideAnimationDuration" comments="photoComments0"></slide>
         <slide ng-if="showSlide1" photo="photo1" animation-duration="slideAnimationDuration" comments="photoComments1"></slide>

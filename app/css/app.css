@@ -106,6 +106,9 @@
   position: relative;
   overflow: hidden;
 }
+#canvas #preloader {
+  display: none;
+}
 #canvas .debug {
   position: absolute;
   bottom: 20px;
