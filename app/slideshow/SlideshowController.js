@@ -7,8 +7,8 @@
         function ($scope, ezfb, $state, fbService, filterPhotosSvc, $stateParams, $rootScope, $animate, $timeout, $document) {
             $scope.pristine = true;
 
-            var slideTime = 12; //seconds
-            var slideAnimationDuration = 3; //seconds
+            var slideTime = 6; //seconds
+            var slideAnimationDuration = 6; //seconds
             var metaAnimationDuration = slideAnimationDuration > 5 ? slideAnimationDuration / 2 : 2;
             var metaAnimationDelay = metaAnimationDuration / 2;
             var descriptionAnimationDuration = metaAnimationDuration;
@@ -22,8 +22,8 @@
             var mostLikedAnimationDelay = numberOfLikesAnimationDelay + 300; //milliseconds
 
 
-            var maxNumberOfSlides = 3;
-            var maxNumberOfTopLikedSlides = 2;
+            var maxNumberOfSlides = 6;
+            var maxNumberOfTopLikedSlides = 3;
             var skipFilterToShowAllSlides = true;
             var numberOfIterations = 0;
             var numberOfIterationsToResetSkipFilter = 10;
@@ -47,7 +47,7 @@
 
             $scope.showExitButton = false;
 
-            var previousPhotos = [];
+            var _previousPhotos = [];
 
             function exitFullscreen() {
                 if (document.exitFullscreen) {
@@ -134,15 +134,25 @@
                 var coverPhoto = photos[photos.length - 1];
 
                 if (!skipFilterToShowAllSlides && maxNumberOfSlides > 0) {
-                    var newPhotosToShow = filterPhotosSvc.getNewPhotos(previousPhotos, filteredPhotos);
+                    var newPhotosToShow = filterPhotosSvc.getNewPhotos(_previousPhotos, filteredPhotos);
+                    console.log("newPhotosToShow", newPhotosToShow, "maxNumberOfSlides", maxNumberOfSlides);
                     if (newPhotosToShow.length > maxNumberOfSlides) {
+                        console.log("There are more new photos than maxNumberOfSlides. Showing all new photos");
                         filteredPhotos = newPhotosToShow; //show all the new photos since last run
-                    } else if ( maxNumberOfSlides > filteredPhotos.length) {
+                    } else if (filteredPhotos.length > maxNumberOfSlides) {
+                        console.log("Showing max number of photos", maxNumberOfSlides);
                         filteredPhotos = filteredPhotos.slice(0, maxNumberOfSlides);
+                    }
+                    if (newPhotosToShow.length > 0) {
+                        console.log("_previousPhotos before concat", _previousPhotos);
+                        angular.forEach(newPhotosToShow, function (newPhoto) {
+                            _previousPhotos.push(newPhoto.id);
+                        });
+                        console.log("_previousPhotos after concat", _previousPhotos);
                     }
                 }
 
-                filteredPhotos.reverse(); //reverse to get newest first...
+                filteredPhotos.reverse(); //reverse to get oldest first...
 
                 if (coverPhoto) {
                     var isCoverPhotoInFilteredPhotos = _.some(filteredPhotos, { 'id': coverPhoto.id });
@@ -181,7 +191,9 @@
                 showExitButonTimer = $timeout(function () {
                     console.log("showExitButonTimer. Hiding button", showExitButonTimer);
                     $scope.showExitButton = false;
+                    document.body.style.cursor = 'none';
                 }, 3000);
+                document.body.style.cursor = 'auto';
                 $scope.showExitButton = true;
             }
 
@@ -201,11 +213,12 @@
                             if (res && res.data) {
                                 $scope.photos = res.data;
                                 angular.forEach(res.data, function (photo) {
-                                    previousPhotos.push(photo.id);
+                                    _previousPhotos.push(photo.id);
                                 });
-                                //previousPhotos.pop(); //debug;
-                                console.log("Initialized previousPhotos", previousPhotos);
+                                //_previousPhotos.pop(); //debug;
+                                console.log("Initialized previousPhotos", _previousPhotos);
                                 startSlideShow(res.data);
+                                setShowExitButtonTimer();
                             } else if (res && res.error) {
                                 $rootScope.$broadcast("error", res.error);
                             }

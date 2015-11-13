@@ -23,15 +23,15 @@ describe('fbEventSlideshow', function () {
 
     describe('filterPhotosSvc', function () {
         it('should return 0 new photos when matched with previous photos', function () {
-            var previousPhotos = [{ id:'1' }, { id:'2'}, { id:'3'}];
-            var photos = [{ id:'1'}, { id:'2'}, { id:'3'}];
+            var previousPhotos = ['a1', 'a2', 'a3'];
+            var photos = [{ id:'a1'}, { id:'a2'}, { id:'a3'}];
             var expectedResult = [];
             var result = filterPhotosSvc.getNewPhotos(previousPhotos, photos);
             expect(result).toEqual(expectedResult);
         });
 
         it('should return 3 new photo when matched with previous photos', function () {
-            var previousPhotos = [{ id:'1'}, { id:'2'}, { id:'3'}];
+            var previousPhotos = ['1', '2', '3'];
             var photos = [{ id:'1'}, { id:'2'}, { id:'3'}, { id:'11'}, { id:'12'}, { id:'13'}];
             var expectedResult = [{ id: '11' }, { id: '12' }, { id: '13' }];
             var result = filterPhotosSvc.getNewPhotos(previousPhotos, photos);

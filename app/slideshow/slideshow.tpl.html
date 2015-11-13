@@ -1,6 +1,6 @@
 ﻿<div id="canvas">
     <div id="preloader">
-        <img ng-repeat="photo in photos" ng-src="{{photo.images[0].source}}"/>
+        <img ng-repeat="photo in photos  | orderBy:'-'" ng-src="{{photo.images[0].source}}"/>
     </div>
     <md-button ng-click="exitSlideShow()" class="md-icon-button closeButton" aria-label="close" ng-show="showExitButton">
         <md-icon md-font-library="material-icons">close</md-icon>

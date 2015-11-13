@@ -5,8 +5,8 @@
         function getNewPhotos(previousPhotos, photos) {
             var newPhotosToShow = [];
             angular.forEach(photos, function (photo) {
-                var alreadyShownPhoto = _.find(previousPhotos, { 'id': photo.id });
-                if (!alreadyShownPhoto) {
+                var alreadyShownPhoto = _.indexOf(previousPhotos, photo.id);
+                if (alreadyShownPhoto < 0) {
                     newPhotosToShow.push(photo);
                 }
             });
