@@ -22,8 +22,8 @@
             var mostLikedAnimationDelay = numberOfLikesAnimationDelay + 300; //milliseconds
 
 
-            var maxNumberOfSlides = 6;
-            var maxNumberOfTopLikedSlides = 3;
+            var maxNumberOfSlides = 5;
+            var maxNumberOfTopLikedSlides = 2;
             var skipFilterToShowAllSlides = true;
             var numberOfIterations = 0;
             var numberOfIterationsToResetSkipFilter = 10;
